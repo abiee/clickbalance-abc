@@ -34,6 +34,14 @@ describe('Client', function() {
       });
       expect(client).to.not.have.property('other');
     });
+
+    it('generates a cuentaContable if not specified', function() {
+      var client = new Client({
+        'nombre': 'John',
+        'numeroCliente': '0100',
+      });
+      expect(client).to.have.property('cuentaContable', '120-001-0100');
+    });
   });
 
   describe('#isValid', function() {
@@ -52,16 +60,18 @@ describe('Client', function() {
       var client = new Client({
         nombre: 'John Doe',
         rfc: 'ABC123456DEA',
-        codigoPostal: '00000'
+        codigoPostal: '00000',
+        numeroCliente: '1000'
       });
       expect(client.isValid()).to.be.true;
     });
 
-    it('is not valif if rfc is not valid', function() {
+    it('is not valid if rfc is not valid', function() {
       var client = new Client({
         nombre: 'John Doe',
         rfc: 'ABC123456',
-        codigoPostal: '00000'
+        codigoPostal: '00000',
+        numeroCliente: '1000'
       });
       expect(client.isValid()).to.be.false;
     });
@@ -70,7 +80,8 @@ describe('Client', function() {
       var client = new Client({
         nombre: 'John Doe',
         rfc: 'ABCE123456EFA',
-        codigoPostal: '00000'
+        codigoPostal: '00000',
+        numeroCliente: '1000'
       });
       expect(client.isValid()).to.be.false;
       client.regimen = 'PERSONA_FISICA';
@@ -129,6 +140,18 @@ describe('Client', function() {
       expect(client.isValidCodigoPostal()).to.be.true;
       client.codigoPostal = '80280';
       expect(client.isValidCodigoPostal()).to.be.true;
+    });
+  });
+
+  describe('#isValidNumeroCliente', function() {
+    it('returns true if only has numbers', function() {
+      var client = new Client({ numeroCliente: '000' });
+      expect(client.isValidNumeroCliente()).to.be.true;
+    });
+
+    it('returns false if is not valid', function() {
+      var client = new Client({ numeroCliente: 'text' });
+      expect(client.isValidNumeroCliente()).to.be.false;
     });
   });
 });

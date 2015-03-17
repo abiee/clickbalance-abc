@@ -22,10 +22,23 @@ export default class Client {
         this[key] = value;
       }
     }, this));
+
+    if (!this.cuentaContable) {
+      this.generateAccountNumber();
+    }
+  }
+
+  generateAccountNumber() {
+    this.cuentaContable = this.getAccountPrefix() + '-' + this.numeroCliente;
+  };
+
+  getAccountPrefix() {
+    return '120-001';
   }
 
   isValid() {
-    if (this.rfc && this.nombre && this.codigoPostal && this.isValidRFC()) {
+    if (this.rfc && this.isValidRFC() && this.nombre && this.codigoPostal 
+        && this.numeroCliente && this.isValidNumeroCliente()) {
       if (this.rfc.length === 13 && !this.regimen) {
         return false;
       }
@@ -58,5 +71,13 @@ export default class Client {
     }
 
     return this.codigoPostal.match(/[0-9]{5}/) !== null;
+  }
+
+  isValidNumeroCliente() {
+    if (!this.numeroCliente) {
+      return false;
+    }
+
+    return this.numeroCliente.match(/[0-9]/) !== null;
   }
 }

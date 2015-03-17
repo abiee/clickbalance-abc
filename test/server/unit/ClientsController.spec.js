@@ -25,7 +25,8 @@ describe('ClientsController', function() {
         nombre: 'John',
         apellidoPaterno: 'Doe',
         rfc: 'ABC123456ABA',
-        codigoPostal: '80280'
+        codigoPostal: '80280',
+        numeroCliente: '1000'
       };
     });
 
