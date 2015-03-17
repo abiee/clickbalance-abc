@@ -30,15 +30,15 @@ export default class Client {
 
   generateAccountNumber() {
     this.cuentaContable = this.getAccountPrefix() + '-' + this.numeroCliente;
-  };
+  }
 
   getAccountPrefix() {
     return '120-001';
   }
 
   isValid() {
-    if (this.rfc && this.isValidRFC() && this.nombre && this.codigoPostal 
-        && this.numeroCliente && this.isValidNumeroCliente()) {
+    if (this.rfc && this.isValidRFC() && this.nombre && this.codigoPostal &&
+        this.numeroCliente && this.isValidNumeroCliente()) {
       if (this.rfc.length === 13 && !this.regimen) {
         return false;
       }

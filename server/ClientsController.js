@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import Client from './models/Client';
+import ClientJSONFormatter from './ClientJSONFormatter';
 
 export class ClientNotFound extends Error { }
 
@@ -10,7 +11,10 @@ export class ClientsController {
 
   getClients() {
     var clients = this._database.getClients();
-    return clients;
+
+    return _.map(clients, function(client) {
+      return ClientJSONFormatter.toJSON(client);
+    });
   }
 
   getClientById(clientId) {
@@ -20,7 +24,7 @@ export class ClientsController {
       throw new ClientNotFound();
     }
 
-    return client;
+    return ClientJSONFormatter.toJSON(client);
   }
 
   createClient(data) {
@@ -31,7 +35,8 @@ export class ClientsController {
     }
 
     this._database.storeClient(client);
-    return client;
+
+    return ClientJSONFormatter.toJSON(client);
   }
 
   updateClientById(clientId, data) {
@@ -47,7 +52,7 @@ export class ClientsController {
 
     this._database.storeClient(client);
 
-    return client;
+    return ClientJSONFormatter.toJSON(client);
   }
 
   deleteClientById(clientId) {
@@ -58,6 +63,7 @@ export class ClientsController {
     }
 
     this._database.deleteClient(client);
-    return client;
+
+    return ClientJSONFormatter.toJSON(client);
   }
 }

@@ -14,6 +14,7 @@ describe('ClientsController', function() {
       nombre: 'John',
       apellidoPaterno: 'Doe',
       rfc: 'ABC123456ABA',
+      numeroCliente: '0100',
       codigoPostal: '80280'
     });
     this.database.storeClient(client);
@@ -21,18 +22,19 @@ describe('ClientsController', function() {
 
   describe('Create new clients', function() {
     beforeEach(function() {
-      this.clientData = {
+    });
+
+    it('stores client in database', function() {
+      var clientData = {
         nombre: 'John',
         apellidoPaterno: 'Doe',
         rfc: 'ABC123456ABA',
         codigoPostal: '80280',
         numeroCliente: '1000'
       };
-    });
 
-    it('stores client in database', function() {
       expect(this.database.getClients()).to.have.a.lengthOf(1);
-      var client = this.controller.createClient(this.clientData);
+      var client = this.controller.createClient(clientData);
       expect(this.database.getClients()).to.have.a.lengthOf(2);
       expect(client).to.have.property('id').that.is.a('string');
     });
@@ -55,7 +57,7 @@ describe('ClientsController', function() {
   });
 
   describe('Find a client by its id', function() {
-    it('finds and return the client', function() {
+    it('find and return the client', function() {
       var clients = this.controller.getClients();
       var client = this.controller.getClientById(clients[0].id);
       expect(client).to.not.be.undefined;
