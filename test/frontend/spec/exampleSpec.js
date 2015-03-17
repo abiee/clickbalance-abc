@@ -1,16 +1,4 @@
 import Backbone from 'backbone';
-import AppLayout from 'app-layout';
-
-describe('Rendering the main layout', function() {
-  'use strict';
-
-  it('renders correctly', function() {
-    var layout = new AppLayout({el: fixture.el});
-    layout.render();
-
-    expect($(fixture.el).find('.row')).to.exist;
-  });
-});
 
 describe('Example of loading a JSON fixture', function() {
   'use strict';
