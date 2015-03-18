@@ -23,7 +23,7 @@ export default class Searchbox extends Marionette.ItemView {
   }
 
   startSearchOnEnter(evt) {
-    if (evt.keyCode == ENTER_KEY) {
+    if (evt.keyCode === ENTER_KEY) {
       this._triggerSearch();
     }
   }

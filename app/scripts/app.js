@@ -58,6 +58,15 @@ App.channel.comply('confirm:delete', function(message, successMessage, callback)
 App.on('before:start', function() {
   'use strict';
 
+  App.channel.on('subapplication:started', function(name) {
+    $('.main-menu li').removeClass('active');
+    $('.main-menu .' + name).addClass('active');
+  });
+});
+
+App.on('before:start', function() {
+  'use strict';
+
   $(document).on('click', 'a[href^="/"]:not([data-bypass])', function(event) {
     if (!(event.altKey || event.ctrlKey || event.metaKey || event.shiftKey)) {
       event.preventDefault();
