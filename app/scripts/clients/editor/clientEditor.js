@@ -25,10 +25,14 @@ export default class ClientEditor extends Marionette.Object {
           App.router.navigate('/app/clientes/', true);
           App.channel.command('notify', 'Se guardó el cliente con éxito');
         },
-        error: function() {
-          App.channel.command('notify', 'error',
-                              'Ocurrió un error mientras se guardaba el ' +
-                              'el cliente. Intente de nuevo más tarde');
+        error: function(model, err) {
+          if (err.status === 410) {
+            App.channel.command('notify', 'error', err.responseJSON.error);
+          } else {
+            App.channel.command('notify', 'error',
+                                'Ocurrió un error mientras se guardaba el ' +
+                                'el cliente. Intente de nuevo más tarde');
+          }
         }
       });
     });

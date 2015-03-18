@@ -11,7 +11,7 @@ import morgan from 'morgan';
 import serveStatic from 'serve-static';
 // @endif
 
-import {ClientsController,ClientNotFound} from './ClientsController';
+import {ClientsController,ClientNotFound,DuplicatedRFC} from './ClientsController';
 import Services from './Services';
 import InMemoryDatabase from './database/InMemoryDatabase';
 
@@ -90,7 +90,12 @@ app.post('/api/clientes', function(req, res) {
     var client = clientsController.createClient(clientData);
     res.json(client);
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    if (err instanceof DuplicatedRFC) {
+      res.status(410).json({ error: 'El RFC \'' + clientData.rfc + '\' ' +
+                                    'ya está registrado' });
+    } else {
+      res.status(400).json({ error: err.message });
+    }
   }
 });
 

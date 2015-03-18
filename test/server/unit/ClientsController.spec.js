@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import InMemoryDatabase from '../../../server/database/InMemoryDatabase';
 import Client from '../../../server/models/Client';
-import {ClientsController, ClientNotFound} from '../../../server/ClientsController';
+import {ClientsController,ClientNotFound,DuplicatedRFC} from '../../../server/ClientsController';
 
 function insertMockedClients(database, quantity) {
   'use strict';
@@ -41,14 +41,11 @@ describe('ClientsController', function() {
   });
 
   describe('Create new clients', function() {
-    beforeEach(function() {
-    });
-
     it('stores client in database', function() {
       var clientData = {
         nombre: 'John',
         apellidoPaterno: 'Doe',
-        rfc: 'ABC123456ABA',
+        rfc: 'ABC234567ABA',
         codigoPostal: '80280',
         numeroCliente: '1000'
       };
@@ -71,6 +68,24 @@ describe('ClientsController', function() {
         _this.controller.createClient({ nombre: 'John' });
       }
       expect(createUser).to.throw(Error);
+    });
+
+    it('do not allow to use duplicated RFC', function() {
+      var _this = this;
+      var clientData = {
+        nombre: 'John',
+        apellidoPaterno: 'Doe',
+        rfc: 'ABC234567ABA',
+        codigoPostal: '80280',
+        numeroCliente: '1000'
+      };
+
+      this.controller.createClient(clientData);
+
+      function createClient() {
+        _this.controller.createClient(clientData);
+      }
+      expect(createClient).to.throw(DuplicatedRFC);
     });
   });
 

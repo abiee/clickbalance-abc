@@ -3,6 +3,7 @@ import Client from './models/Client';
 import ClientJSONFormatter from './ClientJSONFormatter';
 
 export class ClientNotFound extends Error { }
+export class DuplicatedRFC extends Error { }
 
 export class ClientsController {
   constructor(database) {
@@ -40,6 +41,11 @@ export class ClientsController {
 
     if (!client.isValid()) {
       throw Error('Los datos del cliente no son válidos');
+    }
+
+    var duplicatedClient = this._database.findClientByRFC(client.rfc);
+    if (duplicatedClient) {
+      throw new DuplicatedRFC();
     }
 
     this._database.storeClient(client);

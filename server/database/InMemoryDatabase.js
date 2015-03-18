@@ -44,6 +44,12 @@ export default class InMemoryDatabase {
     return _.cloneDeep(this._clients[clientId]);
   }
 
+  findClientByRFC(rfc) {
+    return _.find(_.values(this._clients), function(client) {
+      return client.rfc === rfc;
+    });
+  }
+
   deleteClient(client) {
     this._clients = _.omit(this._clients, client.id);
   }
