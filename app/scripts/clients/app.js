@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import Marionette from 'backbone.marionette';
+import App from 'app';
 import ClientList from './list/clientList';
 import ClientEditor from './editor/clientEditor';
 import {ClientModel,ClientCollection} from './entities';
@@ -25,9 +26,14 @@ export default class ClientsApp extends Marionette.Object {
 
     client.fetch({
       success: _.bind(function() {
-        var app = new ClientEditor({ region: this.region });
-        app.showEditor(client);
-      }, this)
+          var app = new ClientEditor({ region: this.region });
+          app.showEditor(client);
+        }, this),
+      error: function() {
+        App.channel.command('notify', 'error',
+                            'Ocurrió un error con el servidor. Intente de' +
+                            'nuevo más tarde');
+      }
     });
   }
 }

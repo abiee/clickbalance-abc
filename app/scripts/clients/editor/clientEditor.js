@@ -1,4 +1,3 @@
-/* global alert */
 import Marionette from 'backbone.marionette';
 import App from 'app';
 import EditorLayout from './editorLayout';
@@ -18,9 +17,12 @@ export default class ClientEditor extends Marionette.Object {
       client.save(null, {
         success: function() {
           App.router.navigate('/app/clientes/', true);
+          App.channel.command('notify', 'Se guardó el cliente con éxito');
         },
         error: function() {
-          alert('Wrong');
+          App.channel.command('notify', 'error',
+                              'Ocurrió un error mientras se guardaba el ' +
+                              'el cliente. Intente de nuevo más tarde');
         }
       });
     });

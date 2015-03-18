@@ -10,11 +10,11 @@ export default class ClientList extends Marionette.Object {
 
   showList(clients) {
     if (clients.length === 0) {
-      var view = new EmptyListView();
+      let view = new EmptyListView();
       this.region.show(view);
     } else {
-      var layout = new ListLayout();
-      var view = new ClientListView({ collection: clients });
+      let layout = new ListLayout();
+      let view = new ClientListView({ collection: clients });
       this.region.show(layout);
       layout.getRegion('list').show(view);
     }
