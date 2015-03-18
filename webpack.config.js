@@ -5,7 +5,7 @@ module.exports = {
 
   // Entry points to bundles to be created
   entry: {
-    app: './app/scripts/app.js',
+    main: './app/scripts/main.js',
     core: [
       'jquery',
       'lodash',

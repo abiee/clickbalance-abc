@@ -21,9 +21,7 @@ app.use(morgan('dev'));
 // @endif
 
 // @ifdef PRODUCTION
-app.use(serveStatic('app', {
-  index: ['index.html']
-}));
+app.use(serveStatic('app', { index: ['index.html'] }));
 // @endif
 
 var clientSchema = {
