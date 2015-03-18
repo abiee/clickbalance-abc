@@ -36,4 +36,10 @@ export default class ClientsApp extends Marionette.Object {
       }
     });
   }
+
+  showNewClient() {
+    var client = new ClientModel();
+    var app = new ClientEditor({ region: this.region });
+    app.showEditor(client);
+  }
 }

@@ -18,6 +18,7 @@ export default class ClientView extends Marionette.ItemView {
       '#estado': 'estado',
       '#ciudad': 'ciudad',
       '#colonia': 'colonia',
+      '#numero-cliente': 'numeroCliente',
       '#cuenta-contable': 'cuentaContable'
     };
     super(...rest);

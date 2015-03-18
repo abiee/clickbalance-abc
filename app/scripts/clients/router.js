@@ -13,6 +13,11 @@ class ClientsController extends Marionette.Controller {
     app.showClientById(clientId);
   }
 
+  showNewClient() {
+    var app = this.getAppInstance();
+    app.showNewClient();
+  }
+
   getAppInstance() {
     var app;
 
@@ -36,7 +41,8 @@ App.on('before:start', function() {
     controller: new ClientsController(),
     appRoutes: {
       'app/clientes/': 'listClients',
-      'app/clientes/ver/:clientId/': 'showClient'
+      'app/clientes/ver/:clientId/': 'showClient',
+      'app/clientes/nuevo/': 'showNewClient'
     }
   });
 });
