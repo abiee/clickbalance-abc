@@ -4,6 +4,7 @@ import Backbone from 'backbone';
 import Marionette from 'backbone.marionette';
 import swal from 'sweetalert/lib/sweet-alert';
 import 'noty/js/noty/packaged/jquery.noty.packaged';
+import 'backbone-validation';
 
 var App = new Marionette.Application();
 
@@ -78,6 +79,93 @@ App.on('before:start', function() {
       easing: 'swing',
       speed: 500
     }
+  });
+});
+
+App.on('before:start', function() {
+  'use strict';
+
+  _.extend(Backbone.Validation.callbacks, {
+    valid: function(view, attr) {
+      var $el = view.$('#' + attr);
+      if ($el.length === 0) {
+        $el = view.$('[name~=' + attr + ']');
+      }
+
+      // If input is inside an input group, $el is changed to
+      // remove error properly
+      if ($el.parent().hasClass('input-group')) {
+        $el = $el.parent();
+      }
+
+      var $group = $el.closest('.form-group');
+      $group.removeClass('has-error')
+        .addClass('has-success');
+
+      var $helpBlock = $el.next('.help-block');
+      if ($helpBlock.length === 0) {
+        $helpBlock = $el.children('.help-block');
+      }
+      $helpBlock.slideUp({
+        done: function() {
+          $helpBlock.remove();
+        }
+      });
+    },
+    invalid: function(view, attr, error) {
+      var $el = view.$('#' + attr);
+      if ($el.length === 0) {
+        $el = view.$('[name~=' + attr + ']');
+      }
+
+      $el.focus();
+
+      var $group = $el.closest('.form-group');
+      $group.removeClass('has-success')
+        .addClass('has-error');
+
+      // If input is inside an input group $el is changed to
+      // place error properly
+      if ($el.parent().hasClass('input-group')) {
+        $el = $el.parent();
+      }
+
+      // If error already exists and its message is different to new
+      // error's message then the previous one is replaced, otherwise
+      // new error is shown with a slide down animation
+      if ($el.next('.help-block').length !== 0) {
+        $el.next('.help-block')[0].innerText = error;
+      } else if ($el.children('.help-block').length !== 0) {
+        $el.children('.help-block')[0].innerText = error;
+      } else {
+        var $error = $('<div>')
+                   .addClass('help-block')
+                   .html(error)
+                   .hide();
+
+        // Placing error
+        if ($el.prop('tagName') === 'div' && !$el.hasClass('input-group')) {
+          $el.append($error);
+        } else {
+          $el.after($error);
+        }
+
+        // Showing animation on error message
+        $error.slideDown();
+      }
+    }
+  });
+
+  _.extend(Backbone.Validation.patterns, {
+    rfc: /[a-zA-Z]{3,4}[0-9]{6}[a-zA-Z0-9]{2}[A0-9]/
+  });
+
+  _.extend(Backbone.Validation.messages, {
+    required: '{0} es obligatorio',
+    rfc: 'R.F.C. no válido, use el formato AAAA######AAA ó AAA######AAA, ' +
+         'con terminación numérica o la letra A',
+    length: '{0} debe ser de exactamente {1} caracteres',
+    minLength: '{0} debe tener al menos {1} caracteres'
   });
 });
 
