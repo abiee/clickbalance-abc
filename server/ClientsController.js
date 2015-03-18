@@ -9,12 +9,20 @@ export class ClientsController {
     this._database = database;
   }
 
-  getClients() {
-    var clients = this._database.getClients();
+  getClientsCount() {
+    return this._database.countClients();
+  }
 
-    return _.map(clients, function(client) {
+  getClients(filters) {
+    var result = this._database.getClients(filters);
+    var clients = _.map(result.items, function(client) {
       return ClientJSONFormatter.toJSON(client);
-    });
+    })
+
+    return {
+      total: result.total,
+      items: clients
+    };
   }
 
   getClientById(clientId) {

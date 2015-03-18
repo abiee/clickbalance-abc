@@ -111,4 +111,9 @@ export class ClientCollection extends Backbone.Collection {
     this.model = ClientModel;
     super(...rest);
   }
+
+  parse(response) {
+    this.total = response.total;
+    return response.items;
+  }
 }

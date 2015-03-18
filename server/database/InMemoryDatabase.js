@@ -1,5 +1,7 @@
 import _ from 'lodash';
 
+const DEFAULT_LIMIT = 10;
+
 export default class InMemoryDatabase {
   constructor() {
     this._clients = {};
@@ -15,8 +17,27 @@ export default class InMemoryDatabase {
     this._clients[client.id] = _.cloneDeep(client);
   }
 
-  getClients() {
-    return _.values(this._clients);
+  getClients(filters) {
+    filters = filters || {};
+    var limit = filters.limit || DEFAULT_LIMIT;
+    var skip = filters.skip || 0;
+    var clients = _.values(this._clients);
+
+    if (filters.rfc && _.trim(filters.rfc) !== '') {
+      let rfc = _.trim(filters.rfc);
+      let regex = new RegExp(rfc);
+      clients = _.filter(clients, function(client) {
+        return client.rfc.match(regex);
+      });
+    }
+
+    var totalResults = clients.length;
+
+    clients = _.slice(clients, skip);
+    return {
+      total: totalResults,
+      items: _.take(clients, limit)
+    };
   }
 
   findClientById(clientId) {
@@ -25,6 +46,10 @@ export default class InMemoryDatabase {
 
   deleteClient(client) {
     this._clients = _.omit(this._clients, client.id);
+  }
+
+  countClients() {
+    return _.values(this._clients).length;
   }
 
   storeZipCode(zipCode, address) {
