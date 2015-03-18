@@ -2,6 +2,7 @@
 import _ from 'lodash';
 import Backbone from 'backbone';
 import Marionette from 'backbone.marionette';
+import Searchbox from 'searchbox';
 import swal from 'sweetalert/lib/sweet-alert';
 import 'noty/js/noty/packaged/jquery.noty.packaged';
 import 'backbone-validation';
@@ -176,6 +177,19 @@ App.on('start', function() {
   if (Backbone.history) {
     Backbone.history.start({ pushState: true });
   }
+});
+
+App.on('start', function() {
+  'use strict';
+
+  var searchbox = new Searchbox();
+  var region = new Marionette.Region({ el: '#search-container' });
+
+  searchbox.on('search', function(keyword) {
+    App.channel.trigger('search', keyword);
+  });
+
+  region.show(searchbox);
 });
 
 export default App;

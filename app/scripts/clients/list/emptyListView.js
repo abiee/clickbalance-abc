@@ -8,4 +8,15 @@ export default class EmptyListView extends Marionette.ItemView {
                      'text-center';
     super(...rest);
   }
+
+  showAsSearching() {
+    this.$('.fa-user-times')
+      .addClass('animated wobble')
+      .one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function() {
+        $(this).removeClass('animated wobble');
+      });
+  }
+
+  hideSearchigStatus() {
+  }
 }

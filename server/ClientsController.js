@@ -18,7 +18,7 @@ export class ClientsController {
     var result = this._database.getClients(filters);
     var clients = _.map(result.items, function(client) {
       return ClientJSONFormatter.toJSON(client);
-    })
+    });
 
     return {
       total: result.total,

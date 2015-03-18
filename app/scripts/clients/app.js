@@ -6,8 +6,18 @@ import ClientEditor from './editor/clientEditor';
 import {ClientModel,ClientCollection} from './entities';
 
 export default class ClientsApp extends Marionette.Object {
-  constructor(options) {
+  constructor(options, ...rest) {
     this.region = options.region;
+    super(options, ...rest);
+  }
+
+  initialize() {
+    this.listenTo(App.channel, 'search', this.performSearch, this);
+  }
+
+  performSearch(keyword) {
+    var app = this._initializeSubapp(ClientList, this.region);
+    app.showSearching(keyword);
   }
 
   showClientList() {
@@ -15,8 +25,9 @@ export default class ClientsApp extends Marionette.Object {
 
     clients.fetch({
       success: _.bind(function() {
-        var app = new ClientList({ region: this.region });
+        var app = this._initializeSubapp(ClientList, this.region);
         app.showList(clients);
+        this.currentApp = app;
       }, this)
     });
   }
@@ -26,7 +37,7 @@ export default class ClientsApp extends Marionette.Object {
 
     client.fetch({
       success: _.bind(function() {
-          var app = new ClientEditor({ region: this.region });
+          var app = this._initializeSubapp(ClientEditor, this.region);
           app.showEditor(client);
         }, this),
       error: function() {
@@ -39,7 +50,20 @@ export default class ClientsApp extends Marionette.Object {
 
   showNewClient() {
     var client = new ClientModel();
-    var app = new ClientEditor({ region: this.region });
+    var app = this._initializeSubapp(ClientEditor, this.region);
     app.showEditor(client);
+  }
+
+  _initializeSubapp(Subapp, region) {
+    if (this.currentApp && !(this.currentApp instanceof Subapp)) {
+      this.currentApp.destroy();
+      let app = new Subapp({ region: region });
+      this.currentApp = app;
+    } else if (!this.currentApp) {
+      let app = new Subapp({ region: region });
+      this.currentApp = app;
+    }
+
+    return this.currentApp;
   }
 }

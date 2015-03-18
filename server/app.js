@@ -60,7 +60,7 @@ database.storeZipCode('80000', {
 
 app.get('/api/clientes', function(req, res) {
   'use strict';
-  res.json(clientsController.getClients());
+  res.json(clientsController.getClients(req.query));
 });
 
 app.get('/api/clientes/:id', function(req, res) {
@@ -91,7 +91,7 @@ app.post('/api/clientes', function(req, res) {
     res.json(client);
   } catch (err) {
     if (err instanceof DuplicatedRFC) {
-      res.status(410).json({ error: 'El RFC \'' + clientData.rfc + '\' ' +
+      res.status(409).json({ error: 'El RFC \'' + clientData.rfc + '\' ' +
                                     'ya está registrado' });
     } else {
       res.status(400).json({ error: err.message });

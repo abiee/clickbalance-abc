@@ -10,4 +10,16 @@ export default class ListLayout extends Marionette.LayoutView {
     };
     super(...rest);
   }
+
+  showAsSearching(keyword) {
+    var $el = this.$('.page-title > span');
+    var $spin = $('<i>').addClass('fa fa-spinner fa-spin');
+
+    $el.html('Buscando \'' + keyword + '\'... ').append($spin);
+  }
+
+  hideSearchigStatus() {
+    var $el = this.$('.page-title > span');
+    $el.html('Todos los clientes registrados');
+  }
 }
