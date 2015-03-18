@@ -12,6 +12,7 @@ import serveStatic from 'serve-static';
 // @endif
 
 import {ClientsController,ClientNotFound} from './ClientsController';
+import Services from './Services';
 import InMemoryDatabase from './database/InMemoryDatabase';
 
 var app = express();
@@ -49,6 +50,13 @@ var clientSchema = {
 
 var database = new InMemoryDatabase();
 var clientsController = new ClientsController(database);
+var services = new Services(database);
+
+database.storeZipCode('80000', {
+  estado: 'SIN',
+  ciudad: 'Culiacán',
+  colonia: 'Centro'
+});
 
 app.get('/api/clientes', function(req, res) {
   'use strict';
@@ -123,6 +131,18 @@ app.delete('/api/clientes/:id', function(req, res) {
     } else {
       res.status(500).json({ error: 'Error interno del servidor' });
     }
+  }
+});
+
+app.get('/api/codigo-postal/:code', function(req, res) {
+  'use strict';
+  var code = req.params.code;
+  var address = services.getAddressByZipCode(code);
+
+  if (address) {
+    res.json(address);
+  } else {
+    res.status(404).json({ error: 'Código postal no encontrado' });
   }
 });
 

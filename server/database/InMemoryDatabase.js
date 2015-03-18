@@ -26,4 +26,12 @@ export default class InMemoryDatabase {
   deleteClient(client) {
     this._clients = _.omit(this._clients, client.id);
   }
+
+  storeZipCode(zipCode, address) {
+    this._codigosPostales[zipCode] = _.cloneDeep(address);
+  }
+
+  getAddressByZipCode(zipCode) {
+    return _.cloneDeep(this._codigosPostales[zipCode]);
+  }
 }

@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import $ from 'jquery';
 import Backbone from 'backbone';
 
 export class ClientModel extends Backbone.Model {
@@ -74,6 +75,33 @@ export class ClientModel extends Backbone.Model {
     return _.trim(this.get('nombre') + ' ' +
                   (this.get('apellidoPaterno') || '') + ' ' +
                   (this.get('apellidoMaterno') || ''));
+  }
+
+  setAddressByZipCode(successCallback, failCallback) {
+    var zipCode = this.get('codigoPostal');
+
+    $.get(`/api/codigo-postal/${zipCode}`)
+      .done(_.bind(function(response) {
+        this.set('estado', response.estado);
+        this.set('ciudad', response.ciudad);
+        this.set('colonia', response.colonia);
+        if (successCallback) {
+          successCallback();
+        }
+      }, this))
+      .fail(_.bind(function(err) {
+        this.unsetAddress();
+        if (failCallback) {
+          let error = err.responseJSON || { error: err.responseText };
+          failCallback(error);
+        }
+      }, this));
+  }
+
+  unsetAddress() {
+    this.unset('estado');
+    this.unset('ciudad');
+    this.unset('colonia');
   }
 }
 

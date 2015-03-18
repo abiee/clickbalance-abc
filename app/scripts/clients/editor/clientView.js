@@ -148,6 +148,7 @@ export default class ClientView extends Marionette.ItemView {
 
   initialize() {
     this.listenTo(this.model, 'change:regimen', this.hideShowApellidos, this);
+    this.listenTo(this.model, 'change:codigoPostal', this.updateClientAddress, this);
   }
 
   hideShowApellidos() {
@@ -159,6 +160,17 @@ export default class ClientView extends Marionette.ItemView {
     } else {
       this.$('#apellido-paterno').closest('.form-group').slideDown();
       this.$('#apellido-materno').closest('.form-group').slideDown();
+    }
+  }
+
+  updateClientAddress() {
+    var zipCode = this.model.get('codigoPostal');
+
+    // Fetch address information only if the zipcode is valid
+    if (zipCode && zipCode.match(/[0-9]{5}/)) {
+      this.model.setAddressByZipCode();
+    } else {
+      this.model.unsetAddress();
     }
   }
 

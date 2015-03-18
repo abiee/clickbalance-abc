@@ -28,5 +28,80 @@ describe('Client entities', function() {
       client.set('numeroCliente', '');
       expect(client.get('cuentaContable')).to.be.empty;
     });
+
+    describe('#setAddressByZipCode', function() {
+      beforeEach(function() {
+        this.server = sinon.fakeServer.create();
+      });
+
+      afterEach(function() {
+        this.server.restore();
+      });
+
+      it('fetchs address data from server and set the attributes', function() {
+        this.server.respondWith('GET', '/api/codigo-postal/80000',
+            [200, { 'Content-Type': 'application/json' },
+             '{ "estado": "SIN", "ciudad": "Culiacán", "colonia": "Centro" }']);
+
+        var client = new ClientModel({ codigoPostal: '80000' });
+
+        client.setAddressByZipCode();
+        this.server.respond();
+
+        expect(client.get('estado')).to.be.equal('SIN');
+        expect(client.get('ciudad')).to.be.equal('Culiacán');
+        expect(client.get('colonia')).to.be.equal('Centro');
+      });
+
+      it('calls a success callback if finished successfully', function() {
+        this.server.respondWith('GET', '/api/codigo-postal/80000',
+            [200, { 'Content-Type': 'application/json' },
+             '{ "estado": "SIN", "ciudad": "Culiacán", "colonia": "Centro" }']);
+
+        var client = new ClientModel({ codigoPostal: '80000' });
+        var callback = sinon.stub();
+
+        client.setAddressByZipCode(callback);
+        this.server.respond();
+        expect(callback).to.have.been.calledOnce;
+      });
+
+      it('calls a fail callback if finished with errors', function() {
+        this.server.respondWith('GET', '/api/codigo-postal/80000',
+            [404, { 'Content-Type': 'application/json' },
+             '{ "error": "Código postal no encontrado" }']);
+
+        var client = new ClientModel({ codigoPostal: '80000' });
+        var callback = sinon.stub();
+
+        client.setAddressByZipCode(null, callback);
+        this.server.respond();
+
+        expect(callback).to.have.been.calledOnce;
+        expect(callback).to.have.been.calledWith({
+          error: 'Código postal no encontrado'
+        });
+      });
+
+      it('unsets address if server fetch fails', function() {
+        this.server.respondWith('GET', '/api/codigo-postal/80000',
+            [404, { 'Content-Type': 'application/json' },
+             '{ "error": "Código postal no encontrado" }']);
+
+        var client = new ClientModel({
+          estado: 'SIN',
+          ciudad: 'Culiacán',
+          colonia: 'Centro',
+          codigoPostal: '10000'
+        });
+
+        client.setAddressByZipCode();
+        this.server.respond();
+
+        expect(client.get('estado')).to.be.undefined;
+        expect(client.get('ciudad')).to.be.undefined;
+        expect(client.get('colonia')).to.be.undefined;
+      });
+    });
   });
 });
