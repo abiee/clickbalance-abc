@@ -22,6 +22,10 @@ app.use(morgan('dev'));
 
 // @ifdef PRODUCTION
 app.use(serveStatic('app', { index: ['index.html'] }));
+app.get('/app*', function(req, res) {
+  'use strict';
+  res.sendFile(`${__dirname}/app/index.html`);
+});
 // @endif
 
 var clientSchema = {
