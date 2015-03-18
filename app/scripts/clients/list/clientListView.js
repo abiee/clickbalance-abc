@@ -5,6 +5,9 @@ class ClientView extends Marionette.ItemView {
   constructor(...rest) {
     this.template = clientViewTemplate;
     this.className = 'col-xs-12 col-md-3';
+    this.triggers = {
+      'click .delete': 'delete:client'
+    };
     super(...rest);
   }
 

@@ -7,7 +7,8 @@ export default class ClientView extends Marionette.ItemView {
     this.template = clientViewTemplate;
     this.className = 'panel panel-default';
     this.triggers = {
-      'click button[type="submit"]': 'save:client'
+      'click button[type="submit"]': 'save:client',
+      'click .delete': 'delete:client'
     };
     this.bindings = {
       '#rfc': 'rfc',
@@ -26,5 +27,11 @@ export default class ClientView extends Marionette.ItemView {
 
   onRender() {
     this.stickit();
+  }
+
+  serializeData() {
+    var serializedData = this.model.toJSON();
+    serializedData.notIsNew = !this.model.isNew();
+    return serializedData;
   }
 }

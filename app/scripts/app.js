@@ -2,6 +2,7 @@
 import _ from 'lodash';
 import Backbone from 'backbone';
 import Marionette from 'backbone.marionette';
+import swal from 'sweetalert/lib/sweet-alert';
 import 'noty/js/noty/packaged/jquery.noty.packaged';
 
 var App = new Marionette.Application();
@@ -21,6 +22,34 @@ App.channel.comply('notify', function(type, message) {
     text: message,
     type: type,
     timeout: timeout
+  });
+});
+
+App.channel.comply('confirm:delete', function(message, successMessage, callback) {
+  'use strict';
+
+  message = message || 'Se eliminará la información y no podrá ser recuperada';
+  successMessage = successMessage || 'Se eliminó la información con éxito';
+
+  function showSuccess() {
+    swal('¡Eliminado!', successMessage, 'success');
+  }
+
+  swal({
+    title: '¿Está usted seguro?',
+    text: message,
+    type: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#DD6B55',
+    confirmButtonText: 'Si, eliminar',
+    cancelButtonText: 'No, mantener información',
+    closeOnConfirm: false
+  }, function() {
+    if (callback) {
+      callback(showSuccess);
+    } else {
+      showSuccess();
+    }
   });
 });
 

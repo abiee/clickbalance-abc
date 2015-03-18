@@ -1,11 +1,17 @@
+import _ from 'lodash';
 import Marionette from 'backbone.marionette';
 import App from 'app';
+import deleteClientMixin from '../deleteClientMixin';
 import EditorLayout from './editorLayout';
 import ClientView from './clientView';
 
 export default class ClientEditor extends Marionette.Object {
-  constructor(options) {
+  constructor(options, ...rest) {
     this.region = options.region;
+
+    _.mixin(this, deleteClientMixin);
+
+    super(options, ...rest);
   }
 
   showEditor(client) {
@@ -27,7 +33,16 @@ export default class ClientEditor extends Marionette.Object {
       });
     });
 
+    view.on('delete:client', _.bind(function(data) {
+      var client = data.model;
+      this.deleteClient(client);
+    }, this));
+
     this.region.show(layout);
     layout.getRegion('form').show(view);
+  }
+
+  onClientDeleted() {
+    App.router.navigate('/app/clientes/', true);
   }
 }

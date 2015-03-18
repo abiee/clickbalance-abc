@@ -9,7 +9,8 @@
     "backbone.stickit": "~0.9.0",
     "fontawesome": "~4.3.0",
     "noty": "~2.3.4",
-    "animate.css": "~3.2.3"
+    "animate.css": "~3.2.3",
+    "sweetalert": "~0.4.2"
   },
   "devDependencies": {},
   "resolutions": {
