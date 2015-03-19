@@ -1,11 +1,6 @@
-import InMemoryDatabase from './InMemoryDatabase';
+import config from 'config';
+import DatabaseFactory from './DatabaseFactory';
 
-var database = new InMemoryDatabase();
+var factory = new DatabaseFactory(config.get('database'));
 
-database.storeZipCode('80000', {
-  estado: 'SIN',
-  ciudad: 'Culiacán',
-  colonia: 'Centro'
-});
-
-export default database;
+export default factory.getDatabase();
