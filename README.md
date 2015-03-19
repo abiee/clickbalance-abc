@@ -1,4 +1,4 @@
-ClickBalance ABC Test
+ClickBalance ABC Test [![Build Status](https://travis-ci.org/abiee/clickbalance-abc.svg?branch=master)](https://travis-ci.org/abiee/clickbalance-abc)
 =====================
 This project shows how to use a Express and Marionette in a simple web application. The project is focused on a single Client resource, it allow us to create, read, update and delete resources through a Backbone.Marionette User Interface.
 
