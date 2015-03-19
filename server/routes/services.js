@@ -3,7 +3,7 @@ import database from '../database';
 
 var services = new Services(database);
 
-module.exports = function(app) {
+module.exports = function(app, logger) {
   'use strict';
 
   app.get('/api/codigo-postal/:code', function(req, res) {
@@ -18,6 +18,7 @@ module.exports = function(app) {
           res.status(404).json({ error: 'Código postal no encontrado' });
         } else {
           res.status(500).json({ error: 'Error interno del servidor' });
+          logger.log('error', err);
         }
       });
   });

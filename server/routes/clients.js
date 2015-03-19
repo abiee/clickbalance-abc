@@ -24,7 +24,7 @@ var clientSchema = {
   required: ['nombre', 'rfc', 'numeroCliente']
 };
 
-module.exports = function(app) {
+module.exports = function(app, logger) {
   'use strict';
 
   app.get('/api/clientes', function(req, res) {
@@ -47,8 +47,9 @@ module.exports = function(app) {
       .then(function(clients) {
         res.json(clients);
       })
-      .catch(function() {
+      .catch(function(err) {
         res.status(500).json({ error: 'Error interno del servidor' });
+        logger.log('error', err);
       });
   });
 
@@ -64,6 +65,7 @@ module.exports = function(app) {
           res.status(404).json({ error: 'El cliente no existe' });
         } else {
           res.status(500).json({ error: 'Error interno del servidor' });
+          logger.log('error', err);
         }
       });
   });
@@ -88,6 +90,7 @@ module.exports = function(app) {
                                         'ya está registrado' });
         } else {
           res.status(400).json({ error: err.message });
+          logger.log('error', err);
         }
       });
   });
@@ -115,6 +118,7 @@ module.exports = function(app) {
                                         'ya está registrado' });
         } else {
           res.status(500).json({ error: 'Error interno del servidor' });
+          logger.log('error', err);
         }
       });
   });
@@ -131,6 +135,7 @@ module.exports = function(app) {
           res.status(404).json({ error: 'El cliente no existe' });
         } else {
           res.status(500).json({ error: 'Error interno del servidor' });
+          logger.log('error', err);
         }
       });
   });
