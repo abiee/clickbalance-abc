@@ -37,6 +37,38 @@ Clone the repository and install the dependencies.
 
 Do not forget to install globally gulp if not installed yet. Note: this project was tested with node v0.12.x.
 
+Databases
+---------
+The application supports two types of databases:
+ - Memory. Memory database does not need to install anything but you will lost all the information when server restarts, useful for testing propourses.
+ - MongoDB. If you want a more traditional approach you can choose to use a MongoDB.
+
+To configure your favorite database please edit the `config/default.js` file as show below.
+
+    // memory example
+    {
+      "database": {
+        "client": "memory"
+      }
+    }
+
+    // mongodb example
+    {
+      "database": {
+        "client": "mongodb",
+        "url": "mongodb://localhost:27017/dbname"
+      }
+    }
+
+By default memory database is selected. You can configure your production environment by creating a file on `config/production.js` and run your project in production mode.
+
+    $ gulp build
+    $ editor dist/config/production.json
+    $ cd dist
+    $ NODE_ENV=production node app
+
+Also you can build your own database driver for this application by implementing the Databse interface, teke a look at `server/database/InMemoryDatabase.js` to see which method you will need to implement.
+
 Build
 -----
 If you want to build the project run.
@@ -65,6 +97,7 @@ Known Issues
  - There is not a frontend pagination component implemented yet, however server has support of skip and limit
  - Client list shows a limit of 10 clients due no pagination component
  - If tdd:server is run, it can fail some tests in MongoDB due connection limit reached, just restart the gulp process
+ - If the process turns slow you will need to clean all cached files with `gulp clean`
 
 Contribution
 ---------------
