@@ -15,6 +15,10 @@ export default class InMemoryDatabase {
       client.id = String(++this._clientsLastId);
     }
     this._clients[client.id] = _.cloneDeep(client);
+
+    return new Promise(function(resolve) {
+      resolve(client);
+    });
   }
 
   getClients(filters) {
@@ -32,37 +36,53 @@ export default class InMemoryDatabase {
     }
 
     var totalResults = clients.length;
-
     clients = _.slice(clients, skip);
-    return {
-      total: totalResults,
-      items: _.take(clients, limit)
-    };
-  }
 
-  findClientById(clientId) {
-    return _.cloneDeep(this._clients[clientId]);
-  }
-
-  findClientByRFC(rfc) {
-    return _.find(_.values(this._clients), function(client) {
-      return client.rfc === rfc;
+    return new Promise(function(resolve) {
+      resolve({
+        total: totalResults,
+        items: _.take(clients, limit)
+      });
     });
   }
 
+  findClientById(clientId) {
+    return new Promise(_.bind(function(resolve) {
+      resolve(_.cloneDeep(this._clients[clientId]));
+    }, this));
+  }
+
+  findClientByRFC(rfc) {
+    return new Promise(_.bind(function(resolve) {
+      resolve(_.find(_.values(this._clients), function(client) {
+        return client.rfc === rfc;
+      }));
+    }, this));
+  }
+
   deleteClient(client) {
-    this._clients = _.omit(this._clients, client.id);
+    return new Promise(_.bind(function(resolve) {
+      this._clients = _.omit(this._clients, client.id);
+      resolve();
+    }, this));
   }
 
   countClients() {
-    return _.values(this._clients).length;
+    return new Promise(_.bind(function(resolve) {
+      resolve(_.values(this._clients).length);
+    }, this));
   }
 
   storeZipCode(zipCode, address) {
-    this._codigosPostales[zipCode] = _.cloneDeep(address);
+    return new Promise(_.bind(function(resolve) {
+      this._codigosPostales[zipCode] = _.cloneDeep(address);
+      resolve();
+    }, this));
   }
 
   getAddressByZipCode(zipCode) {
-    return _.cloneDeep(this._codigosPostales[zipCode]);
+    return new Promise(_.bind(function(resolve) {
+      resolve(_.cloneDeep(this._codigosPostales[zipCode]));
+    }, this));
   }
 }

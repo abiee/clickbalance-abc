@@ -12,7 +12,7 @@ import serveStatic from 'serve-static';
 // @endif
 
 import {ClientsController,ClientNotFound,DuplicatedRFC} from './ClientsController';
-import Services from './Services';
+import {Services,ZipCodeNotFound} from './Services';
 import InMemoryDatabase from './database/InMemoryDatabase';
 
 var app = express();
@@ -60,19 +60,30 @@ database.storeZipCode('80000', {
 
 app.get('/api/clientes', function(req, res) {
   'use strict';
-  res.json(clientsController.getClients(req.query));
+  clientsController.getClients(req.query)
+    .then(function(clients) {
+      res.json(clients);
+    })
+    .catch(function() {
+      res.status(500).json({ error: 'Error interno del servidor' });
+    });
 });
 
 app.get('/api/clientes/:id', function(req, res) {
   'use strict';
   var id = req.params.id;
 
-  try {
-    let client = clientsController.getClientById(id);
-    res.json(client);
-  } catch (err) {
-    res.status(404).json({ error: 'El cliente no existe' });
-  }
+  clientsController.getClientById(id)
+    .then(function(client) {
+      res.json(client);
+    })
+    .catch(function(err) {
+      if (err instanceof ClientNotFound) {
+        res.status(404).json({ error: 'El cliente no existe' });
+      } else {
+        res.status(500).json({ error: 'Error interno del servidor' });
+      }
+    });
 });
 
 app.post('/api/clientes', function(req, res) {
@@ -86,17 +97,18 @@ app.post('/api/clientes', function(req, res) {
     return;
   }
 
-  try {
-    var client = clientsController.createClient(clientData);
-    res.json(client);
-  } catch (err) {
-    if (err instanceof DuplicatedRFC) {
-      res.status(409).json({ error: 'El RFC \'' + clientData.rfc + '\' ' +
-                                    'ya está registrado' });
-    } else {
-      res.status(400).json({ error: err.message });
-    }
-  }
+  clientsController.createClient(clientData)
+    .then(function(client) {
+      res.json(client);
+    })
+    .catch(function(err) {
+      if (err instanceof DuplicatedRFC) {
+        res.status(409).json({ error: 'El RFC \'' + clientData.rfc + '\' ' +
+                                      'ya está registrado' });
+      } else {
+        res.status(400).json({ error: err.message });
+      }
+    });
 });
 
 app.put('/api/clientes/:id', function(req, res) {
@@ -111,44 +123,51 @@ app.put('/api/clientes/:id', function(req, res) {
     return;
   }
 
-  try {
-    var updatedClient = clientsController.updateClientById(id, clientData);
-    res.json(updatedClient);
-  } catch (err) {
-    if (err instanceof ClientNotFound) {
-      res.status(404).json({ error: 'El cliente no existe' });
-    } else {
-      res.status(500).json({ error: 'Error interno del servidor' });
-    }
-  }
+  clientsController.updateClientById(id, clientData)
+    .then(function(updatedClient) {
+      res.json(updatedClient);
+    })
+    .catch(function(err) {
+      if (err instanceof ClientNotFound) {
+        res.status(404).json({ error: 'El cliente no existe' });
+      } else {
+        res.status(500).json({ error: 'Error interno del servidor' });
+      }
+    });
 });
 
 app.delete('/api/clientes/:id', function(req, res) {
   'use strict';
   var id = req.params.id;
 
-  try {
-    var clientDeleted = clientsController.deleteClientById(id);
-    res.json(clientDeleted);
-  } catch (err) {
-    if (err instanceof ClientNotFound) {
-      res.status(404).json({ error: 'El cliente no existe' });
-    } else {
-      res.status(500).json({ error: 'Error interno del servidor' });
-    }
-  }
+  clientsController.deleteClientById(id)
+    .then(function(clientDeleted) {
+      res.json(clientDeleted);
+    })
+    .catch(function(err) {
+      if (err instanceof ClientNotFound) {
+        res.status(404).json({ error: 'El cliente no existe' });
+      } else {
+        res.status(500).json({ error: 'Error interno del servidor' });
+      }
+    });
 });
 
 app.get('/api/codigo-postal/:code', function(req, res) {
   'use strict';
   var code = req.params.code;
-  var address = services.getAddressByZipCode(code);
 
-  if (address) {
-    res.json(address);
-  } else {
-    res.status(404).json({ error: 'Código postal no encontrado' });
-  }
+  services.getAddressByZipCode(code)
+    .then(function(address) {
+      res.json(address);
+    })
+    .catch(function(err) {
+      if (err instanceof ZipCodeNotFound) {
+        res.status(404).json({ error: 'Código postal no encontrado' });
+      } else {
+        res.status(500).json({ error: 'Error interno del servidor' });
+      }
+    });
 });
 
 http.createServer(app).listen(3000, function() {

@@ -11,11 +11,25 @@ export class ClientsController {
   }
 
   getClientsCount() {
-    return this._database.countClients();
+    return new Promise(_.bind(function(resolve) {
+      this._database.countClients()
+        .then(function(count) {
+          console.log(count);
+          resolve(count);
+        });
+    }, this));
   }
 
   getClients(filters) {
-    var result = this._database.getClients(filters);
+    return new Promise(_.bind(function(resolve) {
+      this._database.getClients(filters)
+        .then(_.bind(function(result) {
+          resolve(this._getClients(result));
+        }, this));
+    }, this));
+  }
+
+  _getClients(result) {
     var clients = _.map(result.items, function(client) {
       return ClientJSONFormatter.toJSON(client);
     });
@@ -27,57 +41,86 @@ export class ClientsController {
   }
 
   getClientById(clientId) {
-    var client = this._database.findClientById(clientId);
+    var _this = this;
 
-    if (!client) {
-      throw new ClientNotFound();
-    }
-
-    return ClientJSONFormatter.toJSON(client);
+    return new Promise(function(resolve, reject) {
+      _this._database.findClientById(clientId)
+        .then(function(client) {
+          if (!client) {
+            reject(new ClientNotFound());
+          } else {
+            resolve(ClientJSONFormatter.toJSON(client));
+          }
+        });
+    });
   }
 
   createClient(data) {
+    var _this = this;
     var client = new Client(data);
 
-    if (!client.isValid()) {
-      throw Error('Los datos del cliente no son válidos');
-    }
+    return new Promise(function(resolve, reject) {
+      if (!client.isValid()) {
+        reject(Error('Los datos del cliente no son válidos'));
+      }
 
-    var duplicatedClient = this._database.findClientByRFC(client.rfc);
-    if (duplicatedClient) {
-      throw new DuplicatedRFC();
-    }
+      _this._database.findClientByRFC(client.rfc)
+        .then(function(clientFound) {
+          if (clientFound) {
+            return reject(new DuplicatedRFC());
+          }
 
-    this._database.storeClient(client);
-
-    return ClientJSONFormatter.toJSON(client);
+          return _this._database.storeClient(client);
+        })
+        .then(function() {
+          resolve(ClientJSONFormatter.toJSON(client));
+        });
+    });
   }
 
   updateClientById(clientId, data) {
-    var client = this._database.findClientById(clientId);
+    var _this = this;
+    var client;
 
-    if (!client) {
-      throw new ClientNotFound();
-    }
+    return new Promise(function(resolve, reject) {
+      _this._database.findClientById(clientId)
+        .then(function(clientFound) {
+          if (!clientFound) {
+            return reject(new ClientNotFound());
+          }
 
-    _.forIn(data, function(value, key) {
-      client[key] = value;
+          client = clientFound;
+
+          _.forIn(data, function(value, key) {
+            client[key] = value;
+          });
+
+          return _this._database.storeClient(client);
+        })
+        .then(function() {
+          resolve(ClientJSONFormatter.toJSON(client));
+        });
     });
-
-    this._database.storeClient(client);
-
-    return ClientJSONFormatter.toJSON(client);
   }
 
   deleteClientById(clientId) {
-    var client = this._database.findClientById(clientId);
+    var _this = this;
+    var client;
 
-    if (!client) {
-      throw new ClientNotFound();
-    }
+    return new Promise(function(resolve, reject) {
+      _this._database.findClientById(clientId)
+        .then(function(clientFound) {
+          if (!clientFound) {
+            return reject(new ClientNotFound());
+          }
 
-    this._database.deleteClient(client);
+          client = clientFound;
 
-    return ClientJSONFormatter.toJSON(client);
+          return _this._database.deleteClient(client);
+        })
+        .then(function() {
+          resolve(ClientJSONFormatter.toJSON(client));
+        });
+    });
   }
 }
