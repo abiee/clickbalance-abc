@@ -61,7 +61,7 @@ export class ClientsController {
 
     return new Promise(function(resolve, reject) {
       if (!client.isValid()) {
-        reject(Error('Los datos del cliente no son válidos'));
+        throw new Error('Los datos del cliente no son válidos');
       }
 
       _this._database.findClientByRFC(client.rfc)
@@ -92,15 +92,30 @@ export class ClientsController {
 
           client = clientFound;
 
+          if (!client.isValid()) {
+            throw new Error('Los datos del cliente no son válidos');
+          }
+
           _.forIn(data, function(value, key) {
             client[key] = value;
           });
+
+          return client;
+        })
+        .then(function(client) {
+          return _this._database.findClientByRFC(client.rfc);
+        })
+        .then(function(clientFound) {
+          if (clientFound && clientFound.id != client.id) {
+            throw new DuplicatedRFC();
+          }
 
           return _this._database.storeClient(client);
         })
         .then(function() {
           resolve(ClientJSONFormatter.toJSON(client));
-        });
+        })
+        .catch(reject);
     });
   }
 

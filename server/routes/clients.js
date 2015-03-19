@@ -95,6 +95,9 @@ module.exports = function(app) {
       .catch(function(err) {
         if (err instanceof ClientNotFound) {
           res.status(404).json({ error: 'El cliente no existe' });
+        } else if(err instanceof DuplicatedRFC) {
+          res.status(409).json({ error: 'El RFC \'' + clientData.rfc + '\' ' +
+                                        'ya está registrado' });
         } else {
           res.status(500).json({ error: 'Error interno del servidor' });
         }
