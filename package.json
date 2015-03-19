@@ -1,6 +1,7 @@
 {
-  "name": "project-name",
-  "version": "0.0.0",
+  "name": "clickbalance-abc",
+  "description": "Small project to demostrate the usage of Express with Backbone.Marionette and MongoDB",
+  "version": "0.0.1",
   "dependencies": {
     "backbone": "^1.1.2",
     "backbone-validation": "^0.11.3",

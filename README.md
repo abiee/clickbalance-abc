@@ -1,15 +1,15 @@
-ES6 Marionette and Express project
-==================================
-Looking for boilerplate projects to start working with ECMAScript 6 I didn't found a project that fit my requirements, so I take the best part of other projects and put all together here. This project can be used to bootstrap new projects with ECMAScript 6 support.
+ClickBalance ABC Test
+=====================
+This project shows how to use a Express and Marionette in a simple web application. The project is focused on a single Client resource, it allow us to create, read, update and delete resources through a Backbone.Marionette User Interface.
 
-This is implementation adds Express server to the [ES6 Marionette Project](https://github.com/abiee/es6-marionette).
+This is an example implementation of the project [ES6 Marionette Express Project](https://github.com/abiee/es6-marionette-express).
 
 What's inside
 ----------------
 Batteries included:
  - Gulp
  - Webpack
- - 6to5 Loader
+ - Babel Loader
  - Bootstrap
  - jQuery
  - Backbone
@@ -20,6 +20,8 @@ Batteries included:
  - Livereload
  - Karma
  - Mocha-Chai-Sinon
+ - MongoDB
+ - Express
 
 Includes Marionette shim for Marionette.Radio instead Wreqr. See: [Deprecation notes](http://marionettejs.com/docs/v2.3.1/marionette.application.html#the-application-channel) and [Backbone.Radio documentation](https://github.com/marionettejs/backbone.radio#using-with-marionette).
 
@@ -27,8 +29,8 @@ Setup
 -----
 Clone the repository and install the dependencies.
 
-    $ git clone https://github.com/abiee/es6-marionette-express.git my-project
-    $ cd my-project
+    $ git clone https://github.com/abiee/clickbalance-abc.git
+    $ cd clickbalance-abc
     $ npm install
     $ bower install
     $ gulp serve
@@ -41,20 +43,21 @@ If you want to build the project run.
 
     $ gulp build
 
-It will compile the project and put the result under `dist` directory. Note that bower dependencies are not included, tou can either copy or link the `bowe_components` directory into `dist`.
+This process creates a dist path in the root directory, inside you can run.
+
+    $ node app
+
+To run the application on production mode.
 
 Testing
 ---------
-Two options exists to run tests, the first one is for development process and aims to practice Test Driven Development.
+Hey this application comes with tests too, you can run all test with.
 
-    $ gulp tdd
-
-It will open a Google Chrome instance and run all tests on it, when a file is updated tests will be run again. You can see the rests as a notification or in the console.
-The other option to run tests is for Continuous Integration purposes, it will run all the tests against PanthomJS and output a jUnit format file for analysis.
-    
     $ gulp test
 
-You can get the results at `.tmp/test-results.xml`.
+Maybe you will need to test a CHOME_BIN environent variable to point at your Google Chrome binary. For example, on ArchLinux.
+
+    $ export CHOME_BIN=google-chrome-stable
 
 Contribution
 ---------------
