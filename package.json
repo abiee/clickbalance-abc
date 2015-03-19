@@ -3,7 +3,7 @@
   "description": "Small project to demostrate the usage of Express with Backbone.Marionette and MongoDB",
   "version": "0.0.1",
   "scripts": {
-    "test": "gulp test"
+    "test": "gulp test:ci"
   },
   "dependencies": {
     "backbone": "^1.1.2",

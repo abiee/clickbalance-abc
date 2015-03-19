@@ -229,7 +229,10 @@ gulp.task('test:server', function() {
 
   require('babel/register')({ modules: 'common' });
   return gulp.src(files, { read: false })
-    .pipe($.mocha({ reporter: 'spec', growl: true }));
+    .pipe($.mocha({ reporter: 'spec', growl: true }))
+    .on('end', function() {
+      process.exit(0);
+    });
 });
 
 // Run tests and report for ci
@@ -258,7 +261,10 @@ gulp.task('test:server:ci', function() {
 
   require('babel/register')({ modules: 'common' });
   return gulp.src(files, { read: false })
-    .pipe($.mocha({ reporter: 'xunit-file' }));
+    .pipe($.mocha({ reporter: 'xunit-file' }))
+    .on('end', function() {
+      process.exit(0);
+    });
 });
 
 // Run development server environmnet
