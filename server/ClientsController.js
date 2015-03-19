@@ -92,13 +92,13 @@ export class ClientsController {
 
           client = clientFound;
 
-          if (!client.isValid()) {
-            throw new Error('Los datos del cliente no son válidos');
-          }
-
           _.forIn(data, function(value, key) {
             client[key] = value;
           });
+
+          if (!client.isValid()) {
+            throw new Error('Los datos del cliente no son válidos');
+          }
 
           return client;
         })
