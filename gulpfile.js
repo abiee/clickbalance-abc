@@ -281,7 +281,6 @@ gulp.task('watch', ['connect'], function () {
   gulp.watch('app/scripts/**/*.js', ['webpack']);
   gulp.watch('app/scripts/**/*.hbs', ['templates', 'webpack']);
   gulp.watch('app/styles/**/*.less', ['styles']);
-  gulp.watch('server/**/*.js', ['server:build']);
 });
 
 // Watch for changes on server files
@@ -294,7 +293,8 @@ gulp.task('run:server', ['server:build'], function() {
     .on('end', function() {
       $.nodemon({
         script: '.tmp/server/app.js',
-        watch: ['.tmp/server'],
+        watch: ['server'],
+        tasks: ['server:build'],
         ignore: ['node_modules']
       });
     });
