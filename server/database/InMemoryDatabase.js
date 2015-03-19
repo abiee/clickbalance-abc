@@ -36,9 +36,9 @@ export default class InMemoryDatabase {
 
     if (filters.rfc && _.trim(filters.rfc) !== '') {
       let rfc = _.trim(filters.rfc);
-      let regex = new RegExp(rfc);
+      let regex = new RegExp(rfc, 'i');
       clients = _.filter(clients, function(client) {
-        return client.rfc.match(regex, 'i');
+        return client.rfc.match(regex);
       });
     }
 
