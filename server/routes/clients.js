@@ -28,11 +28,26 @@ module.exports = function(app) {
   'use strict';
 
   app.get('/api/clientes', function(req, res) {
-    clientsController.getClients(req.query)
+    var filters = {};
+
+    ['skip', 'limit'].forEach(function(field) {
+      if (req.query[field]) {
+        let value = parseInt(req.query[field]);
+        if (value) {
+          filters[field] = value;
+        }
+      }
+    });
+
+    if (req.query.rfc) {
+      filters.rfc = req.query.rfc;
+    }
+
+    clientsController.getClients(filters)
       .then(function(clients) {
         res.json(clients);
       })
-      .catch(function() {
+      .catch(function(err) {
         res.status(500).json({ error: 'Error interno del servidor' });
       });
   });
