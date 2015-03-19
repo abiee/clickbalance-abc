@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import Client from '../models/Client';
 
 const DEFAULT_LIMIT = 10;
 
@@ -11,6 +12,12 @@ export default class InMemoryDatabase {
   }
 
   storeClient(client) {
+    var clonedClient = _.cloneDeep(client);
+
+    if (!(clonedClient instanceof Client)) {
+      clonedClient = new Client(clonedClient);
+    }
+
     if (!client.id) {
       client.id = String(++this._clientsLastId);
     }
@@ -48,7 +55,17 @@ export default class InMemoryDatabase {
 
   findClientById(clientId) {
     return new Promise(_.bind(function(resolve) {
-      resolve(_.cloneDeep(this._clients[clientId]));
+      let client = this._clients[clientId];
+
+      if (client) {
+        let clonedClient = _.cloneDeep(client);
+        if (!(clonedClient instanceof Client)) {
+          clonedClient = new Client(clonedClient);
+        }
+        resolve(clonedClient);
+      } else {
+        resolve();
+      }
     }, this));
   }
 

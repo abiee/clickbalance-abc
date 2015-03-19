@@ -256,6 +256,8 @@ describe('ClientsController', function() {
 
           return _this.controller.updateClientById(clientBeforeUpdate.id, {
             nombre: 'Jane',
+            codigoPostal: '10000',
+            numeroCliente: '100',
             rfc: 'XYZ987654XYA'
           });
         })
@@ -333,12 +335,13 @@ describe('ClientsController', function() {
 
     it('fails if client does not exists', function(done) {
       this.controller.deleteClientById('NotExists')
-        .then(null, function(err) {
-          expect(err).to.be.an.instanceOf(ClientNotFound);
-          done();
-        })
         .catch(function(err) {
-          done(err);
+          try {
+            expect(err).to.be.an.instanceOf(ClientNotFound);
+            done();
+          } catch (err) {
+            done(err);
+          }
         });
     });
   });
