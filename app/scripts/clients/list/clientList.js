@@ -73,4 +73,8 @@ export default class ClientList extends Marionette.Object {
       skip: 0
     };
   }
+
+  onDestroy() {
+    this.region.reset();
+  }
 }

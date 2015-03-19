@@ -59,6 +59,12 @@ export default class ClientsApp extends Marionette.Object {
     app.showEditor(client);
   }
 
+  onDestroy() {
+    if (this.currentApp) {
+      this.currentApp.destroy();
+    }
+  }
+
   _initializeSubapp(Subapp, region) {
     if (this.currentApp && !(this.currentApp instanceof Subapp)) {
       this.currentApp.destroy();

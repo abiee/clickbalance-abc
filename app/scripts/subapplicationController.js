@@ -10,8 +10,13 @@ export default class SubapplicationController extends Marionette.Controller {
       app = App.currentApp;
     } else {
       app = new Subapplication({
-        region: new Marionette.Region({ el: '#main-container' })
+        region: App.mainRegion
       });
+
+      if (App.currentApp) {
+        App.currentApp.destroy();
+      }
+
       App.currentApp = app;
       App.channel.trigger('subapplication:started', this.getSubapplicationName());
     }

@@ -11,4 +11,8 @@ export default class AboutApp extends Marionette.Object {
     var view = new AboutView();
     this.region.show(view);
   }
+
+  onDestroy() {
+    this.region.reset();
+  }
 }

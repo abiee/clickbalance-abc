@@ -49,4 +49,8 @@ export default class ClientEditor extends Marionette.Object {
   onClientDeleted() {
     App.router.navigate('/app/clientes/', true);
   }
+
+  onDestroy() {
+    this.region.reset();
+  }
 }

@@ -59,14 +59,18 @@ App.channel.comply('confirm:delete', function(message, successMessage, callback)
 
 App.channel.comply('show:not:found', function() {
   'use strict';
-  var view = new NotFoundView({ el: '#main-container' });
-  view.render();
+  var view = new NotFoundView();
+  App.mainRegion.show(view);
 });
 
 App.channel.comply('show:server:error', function() {
   'use strict';
-  var view = new ServerErrorView({ el: '#main-container' });
-  view.render();
+  var view = new ServerErrorView();
+  App.mainRegion.show(view);
+});
+
+App.on('before:start', function() {
+  App.mainRegion = new Marionette.Region({ el: '#main-container' });
 });
 
 App.on('before:start', function() {
