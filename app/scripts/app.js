@@ -2,6 +2,7 @@
 import _ from 'lodash';
 import Backbone from 'backbone';
 import Marionette from 'backbone.marionette';
+import DefaultRouter from 'defaultRouter';
 import Searchbox from 'searchbox';
 import NotFoundView from 'notFoundView';
 import ServerErrorView from 'serverErrorView';
@@ -70,6 +71,7 @@ App.channel.comply('show:server:error', function() {
 });
 
 App.on('before:start', function() {
+  'use strict';
   App.mainRegion = new Marionette.Region({ el: '#main-container' });
 });
 
@@ -200,7 +202,7 @@ App.on('before:start', function() {
 App.on('start', function() {
   'use strict';
 
-  App.router = new Backbone.Router();
+  App.router = new DefaultRouter();
   if (Backbone.history) {
     Backbone.history.start({ pushState: true });
   }
