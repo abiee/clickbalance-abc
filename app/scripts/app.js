@@ -3,6 +3,8 @@ import _ from 'lodash';
 import Backbone from 'backbone';
 import Marionette from 'backbone.marionette';
 import Searchbox from 'searchbox';
+import NotFoundView from 'notFoundView';
+import ServerErrorView from 'serverErrorView';
 import swal from 'sweetalert/lib/sweet-alert';
 import 'noty/js/noty/packaged/jquery.noty.packaged';
 import 'backbone-validation';
@@ -53,6 +55,18 @@ App.channel.comply('confirm:delete', function(message, successMessage, callback)
       showSuccess();
     }
   });
+});
+
+App.channel.comply('show:not:found', function() {
+  'use strict';
+  var view = new NotFoundView({ el: '#main-container' });
+  view.render();
+});
+
+App.channel.comply('show:server:error', function() {
+  'use strict';
+  var view = new ServerErrorView({ el: '#main-container' });
+  view.render();
 });
 
 App.on('before:start', function() {

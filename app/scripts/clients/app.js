@@ -28,7 +28,10 @@ export default class ClientsApp extends Marionette.Object {
         var app = this._initializeSubapp(ClientList, this.region);
         app.showList(clients);
         this.currentApp = app;
-      }, this)
+      }, this),
+      fail: function() {
+        App.channel.command('show:server:error');
+      }
     });
   }
 
@@ -40,10 +43,12 @@ export default class ClientsApp extends Marionette.Object {
           var app = this._initializeSubapp(ClientEditor, this.region);
           app.showEditor(client);
         }, this),
-      error: function() {
-        App.channel.command('notify', 'error',
-                            'Ocurrió un error con el servidor. Intente de' +
-                            'nuevo más tarde');
+      error: function(model, jqxhr) {
+        if (jqxhr.status === 404) {
+          App.channel.command('show:not:found');
+        } else {
+          App.channel.command('show:server:error');
+        }
       }
     });
   }

@@ -47,14 +47,14 @@ module.exports = function(app) {
       .then(function(clients) {
         res.json(clients);
       })
-      .catch(function(err) {
+      .catch(function() {
         res.status(500).json({ error: 'Error interno del servidor' });
       });
   });
-  
+
   app.get('/api/clientes/:id', function(req, res) {
     var id = req.params.id;
-  
+
     clientsController.getClientById(id)
       .then(function(client) {
         res.json(client);
@@ -67,17 +67,17 @@ module.exports = function(app) {
         }
       });
   });
-  
+
   app.post('/api/clientes', function(req, res) {
     var clientData = req.body;
     var validator = new jsonschema.Validator();
     var validation = validator.validate(clientData, clientSchema);
-  
+
     if (!_.isEmpty(validation.errors)) {
       res.status(400).json({ error: validation.errors });
       return;
     }
-  
+
     clientsController.createClient(clientData)
       .then(function(client) {
         res.json(client);
@@ -91,18 +91,18 @@ module.exports = function(app) {
         }
       });
   });
-  
+
   app.put('/api/clientes/:id', function(req, res) {
     var id = req.params.id;
     var clientData = req.body;
     var validator = new jsonschema.Validator();
     var validation = validator.validate(clientData, clientSchema);
-  
+
     if (!_.isEmpty(validation.errors)) {
       res.status(400).json({ error: validation.errors });
       return;
     }
-  
+
     clientsController.updateClientById(id, clientData)
       .then(function(updatedClient) {
         res.json(updatedClient);
@@ -118,10 +118,10 @@ module.exports = function(app) {
         }
       });
   });
-  
+
   app.delete('/api/clientes/:id', function(req, res) {
     var id = req.params.id;
-  
+
     clientsController.deleteClientById(id)
       .then(function(clientDeleted) {
         res.json(clientDeleted);

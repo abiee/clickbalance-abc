@@ -106,7 +106,7 @@ export class ClientsController {
           return _this._database.findClientByRFC(client.rfc);
         })
         .then(function(clientFound) {
-          if (clientFound && clientFound.id != client.id) {
+          if (clientFound && clientFound.id !== client.id) {
             throw new DuplicatedRFC();
           }
 
