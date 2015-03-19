@@ -10,6 +10,23 @@ import swal from 'sweetalert/lib/sweet-alert';
 import 'noty/js/noty/packaged/jquery.noty.packaged';
 import 'backbone-validation';
 
+$(window).scroll(function(){
+   var position = $(window).scrollTop();
+
+   // Display a scroll to top button
+   if(position >= 100)  {
+    $('#scroll-to-top').attr('style','bottom:8px;');
+   }
+   else {
+    $('#scroll-to-top').removeAttr('style');
+   }
+});
+
+$("#scroll-to-top").click(function()  {
+  $("html, body").animate({ scrollTop: 0 }, 600);
+   return false;
+});
+
 var App = new Marionette.Application();
 
 App.channel.comply('notify', function(type, message) {
