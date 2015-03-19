@@ -187,7 +187,8 @@ App.on('before:start', function() {
   });
 
   _.extend(Backbone.Validation.patterns, {
-    rfc: /[a-zA-Z]{3,4}[0-9]{6}[a-zA-Z0-9]{2}[A0-9]/
+    rfc: /[a-zA-Z]{3,4}[0-9]{6}[a-zA-Z0-9]{2}[A0-9]/,
+    clientNumber: /[0-9]/
   });
 
   _.extend(Backbone.Validation.messages, {
@@ -195,7 +196,8 @@ App.on('before:start', function() {
     rfc: 'R.F.C. no válido, use el formato AAAA######AAA ó AAA######AAA, ' +
          'con terminación numérica o la letra A',
     length: '{0} debe ser de exactamente {1} caracteres',
-    minLength: '{0} debe tener al menos {1} caracteres'
+    minLength: '{0} debe tener al menos {1} caracteres',
+    clientNumber: 'Número de cliente no válido, utilice solo números'
   });
 });
 

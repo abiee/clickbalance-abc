@@ -66,6 +66,7 @@ export class ClientModel extends Backbone.Model {
       },
       numeroCliente: {
         required: true,
+        pattern: 'clientNumber',
         minLength: 2
       }
     };
