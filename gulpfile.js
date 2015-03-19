@@ -133,7 +133,7 @@ gulp.task('connect', ['styles'], function () {
   var app = require('connect')()
     .use(DevWebpackCompiler.getWebpack())
     .use(require('connect-livereload')({port: 35729}))
-    .use(function(req, res, next){ 
+    .use(function(req, res, next){
       if (req.url.match(/^\/api\//)) {
         serverProxy.web(req, res, { target: 'http://localhost:3000' });
       } else {
@@ -319,13 +319,15 @@ gulp.task('server', ['server:build'], function() {
     '!.tmp/server/app.js'
   ]).pipe(gulp.dest('dist'));
 
+  var configs = gulp.src(['config/*.json']).pipe(gulp.dest('dist/config'));
+
   var preprocessed = gulp.src(['.tmp/server/app.js'])
     .pipe($.preprocess({
       context: { PRODUCTION: true }
     }))
     .pipe(gulp.dest('dist'));
 
-  return merge(copied, preprocessed);
+  return merge(copied, configs, preprocessed);
 });
 
 // Build the project for distribution
