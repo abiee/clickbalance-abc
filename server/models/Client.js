@@ -1,6 +1,7 @@
 import _ from 'lodash';
 
 const CLIENT_ATTRIBTES = [
+  'id',
   'nombre',
   'apellidoPaterno',
   'apellidoMaterno',

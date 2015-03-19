@@ -14,18 +14,18 @@ export class ClientsController {
     return new Promise(_.bind(function(resolve) {
       this._database.countClients()
         .then(function(count) {
-          console.log(count);
           resolve(count);
         });
     }, this));
   }
 
   getClients(filters) {
-    return new Promise(_.bind(function(resolve) {
+    return new Promise(_.bind(function(resolve, reject) {
       this._database.getClients(filters)
         .then(_.bind(function(result) {
           resolve(this._getClients(result));
-        }, this));
+        }, this))
+        .catch(reject);
     }, this));
   }
 
@@ -67,14 +67,15 @@ export class ClientsController {
       _this._database.findClientByRFC(client.rfc)
         .then(function(clientFound) {
           if (clientFound) {
-            return reject(new DuplicatedRFC());
+            throw new DuplicatedRFC();
           }
 
           return _this._database.storeClient(client);
         })
-        .then(function() {
-          resolve(ClientJSONFormatter.toJSON(client));
-        });
+        .then(function(clientStored) {
+          resolve(ClientJSONFormatter.toJSON(clientStored));
+        })
+        .catch(reject);
     });
   }
 

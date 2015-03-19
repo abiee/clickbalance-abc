@@ -26,7 +26,7 @@ export default class ClientEditor extends Marionette.Object {
           App.channel.command('notify', 'Se guardó el cliente con éxito');
         },
         error: function(model, err) {
-          if (err.status === 410) {
+          if (err.status === 409) {
             App.channel.command('notify', 'error', err.responseJSON.error);
           } else {
             App.channel.command('notify', 'error',

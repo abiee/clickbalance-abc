@@ -1,4 +1,5 @@
 import InMemoryDatabase from './InMemoryDatabase';
+import MongoDatabase from './MongoDatabase';
 
 export default class DatabaseFactory {
   constructor(config) {
@@ -10,6 +11,9 @@ export default class DatabaseFactory {
       switch(this.config.client) {
         case 'memory':
           this._instance = this._buildMemoryDatabase();
+          break;
+        case 'mongo':
+          this._instance = this._buildMongoDatabase(this.config);
           break;
         default:
           throw new Error('Database client \'' + this.config.client + '\' ' +
@@ -30,5 +34,9 @@ export default class DatabaseFactory {
     });
 
     return database;
+  }
+
+  _buildMongoDatabase(config) {
+    return new MongoDatabase(config.url);
   }
 }
